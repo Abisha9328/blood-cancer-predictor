@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Blood Cancer Detection</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <h2>Blood Cancer Prediction</h2>
+
+        <form method="POST" action="/predict" enctype="multipart/form-data">
+            <!-- Use PDF Selection -->
+            <label for="use_pdf_selector">Use PDF Report?</label>
+            <select name="use_pdf" id="use_pdf_selector">
+                <option value="no">No - Enter Manually</option>
+                <option value="yes">Yes - Upload PDF</option>
+            </select>
+
+            <!-- Manual Input Fields -->
+            <div id="manual_inputs" class="form-grid">
+                <div>
+                    <label>Hemoglobin Count (g/dL):</label>
+                    <input type="number" step="0.1" name="hemoglobin">
+                </div>
+                <div>
+                    <label>WBC Count (cells/μL):</label>
+                    <input type="number" name="wbc">
+                </div>
+                <div>
+                    <label>ECG Heart Rate (bpm):</label>
+                    <input type="number" name="ecg">
+                </div>
+            </div>
+
+            <!-- PDF Upload Field -->
+            <label>Upload PDF Report:</label>
+            <input type="file" name="report_file" accept=".pdf">
+
+            <!-- Submit Button -->
+            <button type="submit">Predict</button>
+        </form>
+
+        <!-- Prediction Result -->
+        {% if prediction %}
+            <div class="result">
+                <h3>Prediction: {{ prediction }}</h3>
+            </div>
+        {% endif %}
+
+        <!-- PDF Download Button -->
+        {% if show_pdf %}
+            <a href="/download" class="pdf-btn">Download Report (PDF)</a>
+        {% endif %}
+    </div>
+
+    <!-- JavaScript to Toggle Manual Input Visibility -->
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const selector = document.getElementById("use_pdf_selector");
+            const manualInputs = document.getElementById("manual_inputs");
+
+            function toggleManualInputs() {
+                manualInputs.style.display = selector.value === "no" ? "grid" : "none";
+            }
+
+            selector.addEventListener("change", toggleManualInputs);
+            toggleManualInputs(); // Initial state
+        });
+    </script>
+
+</body>
+</html>
